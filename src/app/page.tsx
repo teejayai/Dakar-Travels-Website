@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import LandmarkStrip from "@/components/LandmarkStrip";
+import { consumeReturnState } from "@/components/returnState";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+
+  /* When arriving via Go Back, skip the entrance choreography — only the
+     returning landmark should move. (Child effects consume the storage
+     first; we read the cached value.) */
+  const [returning, setReturning] = useState(false);
+  useLayoutEffect(() => {
+    if (consumeReturnState()) setReturning(true);
+  }, []);
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-background">
@@ -16,7 +25,8 @@ export default function Home() {
 
       {/* Faint city skyline behind everything */}
       <motion.div
-        initial={{ opacity: 0 }}
+        key={returning ? "sky-r" : "sky-in"}
+        initial={returning ? false : { opacity: 0 }}
         animate={{ opacity: 0.08 }}
         transition={{ duration: 1.2, ease: "easeOut", delay: 0.4 }}
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center"
@@ -32,7 +42,7 @@ export default function Home() {
         />
       </motion.div>
 
-      <Hero query={query} setQuery={setQuery} />
+      <Hero key={returning ? "hero-r" : "hero-in"} instant={returning} query={query} setQuery={setQuery} />
 
       <LandmarkStrip query={query} />
 

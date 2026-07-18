@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useRef, useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CITIES } from "./cities";
+import { consumeReturnState } from "./returnState";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -17,6 +19,7 @@ const LEFT_BLEED = -42;
 
 export default function LandmarkStrip({ query }: { query: string }) {
   const q = query.trim().toLowerCase();
+  const router = useRouter();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -26,6 +29,52 @@ export default function LandmarkStrip({ query }: { query: string }) {
     const t = setTimeout(() => setEntered(true), 1400);
     return () => clearTimeout(t);
   }, []);
+
+  /* Reverse shared-element zoom: coming back from a detail page, the hero
+     glides from its big centered spot back into this card's slot. */
+  const backConsumed = useRef<
+    { i: number; dx: number; dy: number; s: number } | null | undefined
+  >(undefined);
+  const [backFlip, setBackFlip] = useState<
+    { i: number; dx: number; dy: number; s: number } | null
+  >(null);
+
+  useLayoutEffect(() => {
+    if (backConsumed.current !== undefined) return;
+    let next: { i: number; dx: number; dy: number; s: number } | null = null;
+    try {
+      const savedScroll = sessionStorage.getItem("strip-scroll");
+      const el = scrollerRef.current;
+      if (savedScroll !== null && el) {
+        el.scrollLeft = Number(savedScroll);
+        target.current = el.scrollLeft;
+      }
+      const from = consumeReturnState();
+      if (from && el) {
+        const i = CITIES.findIndex((c) => c.name.toLowerCase() === from.slug);
+        const card = cardRefs.current[i];
+        if (i !== -1 && card) {
+          const to = card.getBoundingClientRect();
+          next = {
+            i,
+            s: from.w / to.width,
+            dx: from.x + from.w / 2 - (to.x + to.width / 2),
+            dy: from.y + from.h / 2 - (to.y + to.height / 2),
+          };
+          setEntered(true);
+        }
+      }
+    } catch {
+      /* storage unavailable — regular entrance */
+    }
+    backConsumed.current = next;
+    setBackFlip(next);
+  }, []);
+
+  /* Prefetch every city route so the forward zoom starts without a hitch. */
+  useEffect(() => {
+    CITIES.forEach((c) => router.prefetch(`/cities/${c.name.toLowerCase()}`));
+  }, [router]);
 
   /* ---- Seamless momentum scrolling ------------------------------------ */
   const target = useRef(0);
@@ -101,7 +150,6 @@ export default function LandmarkStrip({ query }: { query: string }) {
     if (!el || e.pointerType === "touch") return; // native touch scroll is already smooth
     cancelAnimationFrame(raf.current);
     raf.current = 0;
-    el.setPointerCapture(e.pointerId);
     drag.current = {
       active: true,
       startX: e.clientX,
@@ -118,7 +166,12 @@ export default function LandmarkStrip({ query }: { query: string }) {
     const d = drag.current;
     if (!el || !d.active) return;
     const dx = e.clientX - d.startX;
-    if (Math.abs(dx) > 5) d.moved = true;
+    if (Math.abs(dx) > 5 && !d.moved) {
+      d.moved = true;
+      // capture only once an actual drag starts, so plain clicks still
+      // reach the city buttons underneath
+      el.setPointerCapture(e.pointerId);
+    }
     el.scrollLeft = d.startScroll - dx;
     const now = performance.now();
     const dt = now - d.lastT;
@@ -181,32 +234,77 @@ export default function LandmarkStrip({ query }: { query: string }) {
                pure CSS on the inner one so it reacts instantly with no
                entrance-delay bleed. */
             <motion.div
-              key={city.name}
+              key={`${city.name}-${backFlip ? "back" : "in"}`}
               ref={(node) => {
                 cardRefs.current[i] = node;
               }}
-              initial={{ y: 140, opacity: 0 }}
+              initial={
+                backFlip
+                  ? backFlip.i === i
+                    ? { x: backFlip.dx, y: backFlip.dy, scale: backFlip.s, opacity: 1 }
+                    : { y: 0, opacity: 1 }
+                  : { y: 140, opacity: 0 }
+              }
               animate={{
+                x: 0,
                 y: 0,
+                scale: 1,
                 opacity: isMatch ? 1 : 0.08,
                 filter: isMatch ? "saturate(1)" : "saturate(0.15)",
               }}
-              transition={{
-                y: { duration: 0.95, ease: EASE, delay: entered ? 0 : 0.55 + i * 0.07 },
-                opacity: {
-                  duration: 0.45,
-                  ease: "easeOut",
-                  delay: entered ? 0 : 0.55 + i * 0.07,
-                },
-                filter: { duration: 0.45 },
-              }}
+              transition={
+                backFlip?.i === i
+                  ? { duration: 0.85, ease: EASE }
+                  : {
+                      y: {
+                        duration: 0.95,
+                        ease: EASE,
+                        delay: entered ? 0 : 0.55 + i * 0.07,
+                      },
+                      opacity: {
+                        duration: 0.45,
+                        ease: "easeOut",
+                        delay: entered ? 0 : 0.55 + i * 0.07,
+                      },
+                      filter: { duration: 0.45 },
+                    }
+              }
               className="relative shrink-0 hover:z-30"
-              style={{ width: CARD_W, marginLeft: i === 0 ? 0 : -2 * OVERLAP }}
+              style={{
+                width: CARD_W,
+                marginLeft: i === 0 ? 0 : -2 * OVERLAP,
+                zIndex: backFlip?.i === i ? 35 : undefined,
+              }}
             >
               <button
                 type="button"
                 aria-label={`Explore ${city.name}`}
                 disabled={!isMatch}
+                onClick={(e) => {
+                  // hand the landmark's screen rect to the detail page so its
+                  // hero can zoom from exactly here (shared-element FLIP)
+                  const img = (e.currentTarget as HTMLElement).querySelector(
+                    `img[alt="${city.name} landmark"]`,
+                  );
+                  if (img) {
+                    const r = img.getBoundingClientRect();
+                    sessionStorage.setItem(
+                      "landmark-zoom",
+                      JSON.stringify({
+                        slug: city.name.toLowerCase(),
+                        x: r.x,
+                        y: r.y,
+                        w: r.width,
+                        h: r.height,
+                      }),
+                    );
+                  }
+                  sessionStorage.setItem(
+                    "strip-scroll",
+                    String(scrollerRef.current?.scrollLeft ?? 0),
+                  );
+                  router.push(`/cities/${city.name.toLowerCase()}`);
+                }}
                 className="group block w-full cursor-pointer outline-none disabled:cursor-default"
               >
                 {/* Hover / focus reveal pill — Figma Component 1 (527:1953) */}
@@ -245,6 +343,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
                   alt={`${city.name} landmark`}
                   width={376}
                   height={406}
+                  unoptimized
                   draggable={false}
                   className="h-auto w-full origin-bottom transition-transform duration-200 ease-out group-hover:-translate-y-[14px] group-hover:scale-[1.04] group-focus-visible:-translate-y-[14px]"
                   priority={i < 6}

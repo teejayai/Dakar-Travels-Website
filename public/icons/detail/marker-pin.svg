@@ -1,0 +1,23 @@
+<svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="35" height="35" fill="#1E1E1E"/>
+<g id="MacBook Pro 14&#34; - 12">
+<rect width="1512" height="1123" transform="translate(-492 -837)" fill="#FAFAFA"/>
+<g id="Frame 1991427673">
+<g id="Frame 1991427671">
+<foreignObject x="-259.9" y="-148.9" width="554.8" height="311.8"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(11.45px);clip-path:url(#bgblur_0_1_3_clip_path);height:100%;width:100%"></div></foreignObject><g id="Container" data-figma-bg-blur-radius="22.9">
+<rect x="-236.75" y="-125.75" width="508.5" height="265.5" rx="9.75" fill="white" fill-opacity="0.75"/>
+<rect x="-236.75" y="-125.75" width="508.5" height="265.5" rx="9.75" stroke="white" stroke-width="0.5"/>
+<g id="Frame 48096187">
+<rect x="-221" y="-78" width="477" height="191" rx="10" fill="white"/>
+<g id="marker-pin-04">
+<path id="Icon" d="M7.29175 20.8342C4.59184 22.0253 2.91675 23.685 2.91675 25.5208C2.91675 29.1452 9.44593 32.0833 17.5001 32.0833C25.5542 32.0833 32.0834 29.1452 32.0834 25.5208C32.0834 23.685 30.4083 22.0253 27.7084 20.8342M26.2501 11.6666C26.2501 17.5929 19.6876 20.4166 17.5001 24.7916C15.3126 20.4166 8.75008 17.5929 8.75008 11.6666C8.75008 6.83413 12.6676 2.91663 17.5001 2.91663C22.3326 2.91663 26.2501 6.83413 26.2501 11.6666ZM18.9584 11.6666C18.9584 12.472 18.3055 13.125 17.5001 13.125C16.6947 13.125 16.0417 12.472 16.0417 11.6666C16.0417 10.8612 16.6947 10.2083 17.5001 10.2083C18.3055 10.2083 18.9584 10.8612 18.9584 11.6666Z" stroke="#005522" stroke-width="2.91667" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="bgblur_0_1_3_clip_path" transform="translate(259.9 148.9)"><rect x="-236.75" y="-125.75" width="508.5" height="265.5" rx="9.75"/>
+</clipPath></defs>
+</svg>

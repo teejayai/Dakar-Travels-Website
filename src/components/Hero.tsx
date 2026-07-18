@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { CITIES } from "./cities";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const HEADLINE = "Find a city in India by feeling, not by list.";
@@ -26,6 +28,7 @@ function FloatingIcon({
   drift,
   width,
   height,
+  instant,
 }: {
   src: string;
   className: string;
@@ -33,11 +36,12 @@ function FloatingIcon({
   drift: number;
   width: number;
   height: number;
+  instant?: boolean;
 }) {
   return (
     <motion.div
       className={className}
-      initial={{ scale: 0, opacity: 0, rotate: -20 }}
+      initial={instant ? false : { scale: 0, opacity: 0, rotate: -20 }}
       animate={{ scale: 1, opacity: 1, rotate: 0 }}
       transition={{ type: "spring", stiffness: 260, damping: 16, delay }}
     >
@@ -54,15 +58,28 @@ function FloatingIcon({
 export default function Hero({
   query,
   setQuery,
+  instant = false,
 }: {
   query: string;
   setQuery: (v: string) => void;
+  instant?: boolean;
 }) {
+  const router = useRouter();
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim().toLowerCase();
+    if (!q) return;
+    const match = CITIES.find((c) => c.name.toLowerCase().includes(q));
+    if (match) router.push(`/cities/${match.name.toLowerCase()}`);
+  };
+
   return (
     <section className="pointer-events-none relative z-30 mx-auto flex min-h-screen max-w-[720px] flex-col items-center px-6 pt-[20vh] text-center">
       {/* Floating icons flanking the headline */}
       <FloatingIcon
         src="/icons/camera.svg"
+        instant={instant}
         width={50}
         height={41}
         delay={0.9}
@@ -71,6 +88,7 @@ export default function Hero({
       />
       <FloatingIcon
         src="/icons/tree-sunset.svg"
+        instant={instant}
         width={39}
         height={48}
         delay={1.05}
@@ -81,7 +99,7 @@ export default function Hero({
       {/* Headline */}
       <motion.h1
         variants={container}
-        initial="hidden"
+        initial={instant ? "show" : "hidden"}
         animate="show"
         className="flex flex-wrap justify-center text-[clamp(34px,6vw,52px)] font-medium leading-[1.12] tracking-[-0.02em] text-headline"
       >
@@ -96,7 +114,7 @@ export default function Hero({
 
       {/* Subtitle */}
       <motion.p
-        initial={{ y: 16, opacity: 0 }}
+        initial={instant ? false : { y: 16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: EASE, delay: 0.95 }}
         className="mt-6 text-[15px] font-light tracking-[-0.02em] text-muted"
@@ -106,8 +124,8 @@ export default function Hero({
 
       {/* Search */}
       <motion.form
-        onSubmit={(e) => e.preventDefault()}
-        initial={{ y: 20, opacity: 0 }}
+        onSubmit={onSubmit}
+        initial={instant ? false : { y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.65, ease: EASE, delay: 1.05 }}
         className="pointer-events-auto mt-7 flex w-full max-w-[581px] items-center gap-[17px]"

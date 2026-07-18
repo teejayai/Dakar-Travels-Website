@@ -1,0 +1,24 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="20" height="20" fill="#1E1E1E"/>
+<g id="MacBook Pro 14&#34; - 12">
+<rect width="1512" height="1123" transform="translate(-595 -727)" fill="#FAFAFA"/>
+<g id="Frame 1991427673">
+<g id="Frame 1991427671">
+<foreignObject x="-362.9" y="-38.9" width="554.8" height="311.8"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(11.45px);clip-path:url(#bgblur_0_1_3_clip_path);height:100%;width:100%"></div></foreignObject><g id="Container" data-figma-bg-blur-radius="22.9">
+<rect x="-339.75" y="-15.75" width="508.5" height="265.5" rx="9.75" fill="white" fill-opacity="0.75"/>
+<rect x="-339.75" y="-15.75" width="508.5" height="265.5" rx="9.75" stroke="white" stroke-width="0.5"/>
+<g id="Frame 1410126568">
+<g id="Frame 1991427667">
+<g id="route">
+<path id="Icon" d="M9.58341 4.16663H9.94541C12.4848 4.16663 13.7545 4.16663 14.2364 4.6227C14.6531 5.01693 14.8377 5.59769 14.7252 6.16014C14.5951 6.81081 13.5585 7.544 11.4853 9.0104L8.09818 11.4062C6.025 12.8726 4.9884 13.6058 4.85828 14.2564C4.7458 14.8189 4.93043 15.3997 5.34705 15.7939C5.82903 16.25 7.09871 16.25 9.63808 16.25H10.4167M6.66675 4.16663C6.66675 5.54734 5.54746 6.66663 4.16675 6.66663C2.78604 6.66663 1.66675 5.54734 1.66675 4.16663C1.66675 2.78591 2.78604 1.66663 4.16675 1.66663C5.54746 1.66663 6.66675 2.78591 6.66675 4.16663ZM18.3334 15.8333C18.3334 17.214 17.2141 18.3333 15.8334 18.3333C14.4527 18.3333 13.3334 17.214 13.3334 15.8333C13.3334 14.4526 14.4527 13.3333 15.8334 13.3333C17.2141 13.3333 18.3334 14.4526 18.3334 15.8333Z" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="bgblur_0_1_3_clip_path" transform="translate(362.9 38.9)"><rect x="-339.75" y="-15.75" width="508.5" height="265.5" rx="9.75"/>
+</clipPath></defs>
+</svg>
