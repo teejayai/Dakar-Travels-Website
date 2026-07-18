@@ -75,7 +75,7 @@ export default function Hero({
   };
 
   return (
-    <section className="pointer-events-none relative z-30 mx-auto flex min-h-screen max-w-[720px] flex-col items-center px-6 pt-[20vh] text-center">
+    <section className="pointer-events-none relative z-30 mx-auto flex min-h-screen max-w-[720px] flex-col items-center px-4 pt-[17vh] text-center sm:px-6 sm:pt-[20vh]">
       {/* Floating icons flanking the headline */}
       <FloatingIcon
         src="/icons/camera.svg"
@@ -128,18 +128,18 @@ export default function Hero({
         initial={instant ? false : { y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.65, ease: EASE, delay: 1.05 }}
-        className="pointer-events-auto mt-7 flex w-full max-w-[581px] items-center gap-[17px]"
+        className="pointer-events-auto mt-7 flex w-full max-w-[581px] items-center gap-2.5 sm:gap-[17px]"
       >
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search cities… Delhi, Kochi, Mumbai"
-          className="h-[50px] w-full rounded-[70px] border border-hairline bg-white pl-[23px] pr-6 text-[14px] font-light tracking-[-0.42px] text-[#2d2d2d] placeholder:font-light placeholder:text-muted shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(126,255,95,0.25)]"
+          className="h-[50px] w-full min-w-0 flex-1 rounded-[70px] border border-hairline bg-white pl-4 pr-4 text-[14px] font-light tracking-[-0.42px] text-[#2d2d2d] placeholder:font-light placeholder:text-muted shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(126,255,95,0.25)] sm:pl-[23px] sm:pr-6"
         />
         <button
           type="submit"
-          className="flex h-[50px] shrink-0 items-center rounded-full border-[1.5px] border-white px-[34px] text-[16px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95"
+          className="flex h-[50px] shrink-0 items-center rounded-full border-[1.5px] border-white px-6 text-[15px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:px-[34px] sm:text-[16px]"
           style={{ backgroundImage: "linear-gradient(180deg, #fafafa 0%, #7eff5f 62%)" }}
         >
           Search

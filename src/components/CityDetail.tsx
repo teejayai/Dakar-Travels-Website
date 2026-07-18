@@ -38,12 +38,19 @@ function StatCard({
   delay: number;
 }) {
   return (
-    <motion.div {...rise(delay)} className={`${CARD} flex flex-col gap-3 p-4`}>
-      <p className="text-[16px] font-normal leading-5 text-[#2d2d2d]">{title}</p>
-      <div className="flex h-[62px] items-center rounded-[10px] bg-[#f8f8f8] px-[11px]">
-        <div className="flex items-center gap-[18px]">
-          <span className="shrink-0">{icon}</span>
-          <p className="text-[16px] font-normal leading-5 text-[#2d2d2d]">{value}</p>
+    <motion.div
+      {...rise(delay)}
+      className={`${CARD} flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-4`}
+    >
+      <p className="text-[14px] font-normal leading-5 text-[#2d2d2d] sm:text-[16px]">
+        {title}
+      </p>
+      <div className="flex min-h-[62px] flex-1 items-center rounded-[10px] bg-[#f8f8f8] px-1.5 py-2 sm:px-[11px]">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-[18px]">
+          <span className="shrink-0 scale-[0.8] sm:scale-100">{icon}</span>
+          <p className="line-clamp-2 min-w-[72px] flex-1 text-[11px] font-normal leading-[15px] tracking-[-0.2px] text-[#2d2d2d] sm:text-[16px] sm:leading-5 sm:tracking-normal">
+            {value}
+          </p>
         </div>
       </div>
     </motion.div>
@@ -106,7 +113,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
 
       {/* Hero landmark — large, centered, melting into the page via mask +
           the layer-blur haze (Figma rect 648:9831) */}
-      <div className="relative flex justify-center pt-[120px]">
+      <div className="relative flex justify-center pt-[96px] sm:pt-[120px]">
         {/* static box: measured for the FLIP, never transformed itself */}
         <div ref={heroBoxRef} className="pointer-events-none relative">
           <motion.div
@@ -156,7 +163,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto -mt-16 flex w-full max-w-[1004px] flex-col gap-[14px] px-5 pb-16">
+      <div className="relative z-10 mx-auto -mt-10 flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-16 sm:-mt-16 sm:px-5">
         {/* Go Back chip */}
         <motion.div {...rise(0.15)}>
           <Link
@@ -224,7 +231,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
             {...rise(0.3)}
             className={`${CARD} flex w-full flex-col gap-3 p-4 lg:h-[266px] lg:w-[509px]`}
           >
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <p className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
                 Location
               </p>
@@ -248,28 +255,19 @@ export default function CityDetail({ city }: { city: CityInfo }) {
               </a>
             </div>
             <div className="relative h-[191px] w-full overflow-hidden rounded-[10px] bg-white">
+              {/* exact Figma map export (477×191 @2x) with marker baked in */}
               <Image
-                src="/icons/detail/map-image.png"
+                src="/icons/detail/map-card.png"
                 alt=""
                 fill
-                sizes="509px"
-                className="rotate-90 scale-[2.2] object-cover opacity-90"
+                sizes="(min-width: 1024px) 477px, 100vw"
+                className="object-cover"
               />
-              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <Image
-                  src="/icons/detail/marker-pin.svg"
-                  alt=""
-                  width={35}
-                  height={35}
-                  unoptimized
-                  className="size-[35px] drop-shadow-md"
-                />
-              </span>
             </div>
           </motion.section>
 
           {/* 2×2 stat grid */}
-          <div className="grid flex-1 grid-cols-1 gap-[14px] sm:grid-cols-2">
+          <div className="grid flex-1 grid-cols-2 gap-[10px] sm:gap-[14px]">
             <StatCard
               title="Population"
               icon={<MapIcon />}
@@ -302,7 +300,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
           {...rise(0.6)}
           className={`${CARD} flex flex-col gap-3 overflow-hidden p-4`}
         >
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div className="flex items-center gap-[9px]">
               <LuggageIcon />
               <p className="text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
@@ -311,7 +309,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
             </div>
             <a
               href="#"
-              className="flex h-[50px] items-center rounded-full border-[1.5px] border-white px-[34px] text-[16px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95"
+              className="flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-white px-[34px] text-[16px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:w-auto"
               style={{
                 backgroundImage:
                   "linear-gradient(180deg, #fafafa 0.27%, #7eff5f 62.5%)",

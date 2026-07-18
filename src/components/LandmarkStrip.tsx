@@ -217,8 +217,11 @@ export default function LandmarkStrip({ query }: { query: string }) {
       {/* pt gives room for the hover lift + pill inside the scroll clip */}
       {/* pr lets the last card glide all the way to the viewport center */}
       <div
-        className="flex w-max items-end pb-[31px] pr-[calc(50vw-188px)] pt-[80px]"
-        style={{ marginLeft: LEFT_BLEED }}
+        className="flex w-max items-end pb-[31px] pt-[80px]"
+        style={{
+          marginLeft: LEFT_BLEED,
+          paddingRight: "calc(50vw - min(188px, 41vw))",
+        }}
       >
         {CITIES.map((city, i) => {
           const isMatch = q.length === 0 || city.name.toLowerCase().includes(q);
@@ -271,7 +274,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
               }
               className="relative shrink-0 hover:z-30"
               style={{
-                width: CARD_W,
+                width: `min(${CARD_W}px, 82vw)`,
                 marginLeft: i === 0 ? 0 : -2 * OVERLAP,
                 zIndex: backFlip?.i === i ? 35 : undefined,
               }}
@@ -309,7 +312,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
               >
                 {/* Hover / focus reveal pill — Figma Component 1 (527:1953) */}
                 <span
-                  className={`pointer-events-none absolute left-1/2 top-[10%] z-10 flex h-[45px] -translate-x-1/2 items-center gap-[41px] rounded-full border border-white px-[15px] shadow-[0_2px_13.9px_0_rgba(0,0,0,0.05)] transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 ${
+                  className={`pointer-events-none absolute left-1/2 top-[10%] z-10 flex h-10 -translate-x-1/2 items-center gap-6 rounded-full border border-white px-3 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.05)] transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 sm:h-[45px] sm:gap-[41px] sm:px-[15px] ${
                     soleMatch ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
                   }`}
                   style={{ backgroundImage: "linear-gradient(180deg, #fafafa 0.27%, #bffffc 350%)" }}
@@ -324,7 +327,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
                         className="size-5"
                       />
                     </span>
-                    <span className="whitespace-nowrap text-[16px] font-light tracking-[-0.48px] text-green-ink">
+                    <span className="whitespace-nowrap text-[14px] font-light tracking-[-0.48px] text-green-ink sm:text-[16px]">
                       {city.name}
                     </span>
                   </span>
