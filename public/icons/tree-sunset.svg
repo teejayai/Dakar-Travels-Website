@@ -1,0 +1,38 @@
+<svg width="39" height="48" viewBox="0 0 39 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<g id="MacBook Pro 14&#34; - 5">
+
+<g id="tree-sunset">
+<g id="color">
+<g id="circle" filter="url(#filter0_f_1_3)">
+<circle cx="21.6398" cy="12.5011" r="4.5" transform="rotate(14.496 21.6398 12.5011)" fill="#00A3FF" fill-opacity="0.5"/>
+</g>
+<g id="circle_2" filter="url(#filter1_f_1_3)">
+<circle cx="16.3833" cy="32.8326" r="6.5" transform="rotate(14.496 16.3833 32.8326)" fill="#63E47F" fill-opacity="0.5"/>
+</g>
+</g>
+<path id="Vector" d="M12.135 33.2836C11.4072 32.4699 10.2615 32.1737 9.23055 32.5326L9.11266 32.5737C8.13274 32.9148 7.04516 32.7047 6.2628 32.0231L5.84197 31.6565" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M29.1277 31.4796C28.3999 30.666 27.2542 30.3698 26.2232 30.7287L26.1053 30.7697C25.1254 31.1108 24.0378 30.9007 23.2555 30.2192L22.8346 29.8526" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M3.4381 28.9693L5.14066 28.3766C6.17164 28.0177 7.31732 28.3139 8.04515 29.1275C8.77298 29.9412 9.91866 30.2374 10.9496 29.8785C11.9806 29.5196 13.1263 29.8158 13.8541 30.6294C14.582 31.443 15.7276 31.7393 16.7586 31.3803C17.7896 31.0214 18.9353 31.3176 19.6631 32.1313C20.391 32.9449 21.5366 33.2411 22.5676 32.8822C23.5986 32.5233 24.7443 32.8195 25.4721 33.6332C26.2 34.4468 27.3456 34.743 28.3766 34.3841L29.0233 34.159C29.6762 33.9317 30.4009 34.0717 30.9222 34.5258" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M17.7176 17.6844C15.8285 16.3352 12.2841 14.7302 9.48817 15.5567M17.7176 17.6844C18.6385 18.7832 19.2619 21.6987 18.511 24.6032M17.7176 17.6844C19.4563 17.6174 22.8087 17.9677 23.7603 20.2795M17.7176 17.6844C18.5354 16.5186 17.7072 12.9304 15.0965 11.8422M17.7176 17.6844C18.374 16.4769 21.373 15.5309 23.6682 16.6407M17.7176 17.6844C11.5 21.7576 7.64261 28.6875 7.64261 28.6875M17.7176 17.6844C12.1645 18.6914 7.84157 24.8977 6.30067 28.0069" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_5" d="M31.6804 15.6135C31.9988 15.6958 32.2936 15.8511 32.5415 16.0671L33.0075 16.4731L33.6119 16.3439C33.9334 16.2751 34.2666 16.2822 34.5849 16.3645" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_6" d="M11.8496 8.42065C12.168 8.50296 12.4628 8.65826 12.7107 8.87424L13.1767 9.28021L13.7811 9.15098C14.1026 9.08223 14.4358 9.08929 14.7541 9.17159" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_7" d="M29.0404 31.2505C29.0019 30.8089 28.8657 30.3771 28.6364 29.9879C28.2326 29.3024 27.5729 28.8053 26.8026 28.6062C26.0323 28.407 25.2144 28.522 24.5289 28.9259C24.1397 29.1552 23.8112 29.4669 23.5636 29.8345" stroke="black" stroke-linecap="round"/>
+<path id="Vector_8" d="M27.1781 27.154L27.6787 25.2177" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_9" d="M30.1466 29.5334L31.439 28.772" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_10" d="M23.4289 27.7965L22.6675 26.5042" stroke="black" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_1_3" x="9.13867" y="0" width="25.0022" height="25.0022" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4" result="effect1_foregroundBlur_1_3"/>
+</filter>
+<filter id="filter1_f_1_3" x="1.88184" y="18.3311" width="29.0032" height="29.0031" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="4" result="effect1_foregroundBlur_1_3"/>
+</filter>
+</defs>
+</svg>
