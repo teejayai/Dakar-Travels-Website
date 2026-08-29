@@ -135,7 +135,7 @@ export default function Hero({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search cities… Delhi, Kochi, Mumbai"
-          className="h-[50px] w-full min-w-0 flex-1 rounded-[70px] border border-hairline bg-white pl-4 pr-4 text-[14px] font-light tracking-[-0.42px] text-[#2d2d2d] placeholder:font-light placeholder:text-muted shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(126,255,95,0.25)] sm:pl-[23px] sm:pr-6"
+          className="h-[50px] w-full min-w-0 flex-1 rounded-[70px] border border-hairline bg-white pl-4 pr-4 text-[16px] font-light tracking-[-0.42px] text-[#2d2d2d] placeholder:font-light placeholder:text-muted shadow-[0_1px_2px_rgba(0,0,0,0.03)] outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(126,255,95,0.25)] sm:pl-[23px] sm:pr-6 sm:text-[14px]"
         />
         <button
           type="submit"

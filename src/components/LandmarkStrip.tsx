@@ -217,7 +217,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
       {/* pt gives room for the hover lift + pill inside the scroll clip */}
       {/* pr lets the last card glide all the way to the viewport center */}
       <div
-        className="flex w-max items-end pb-[31px] pt-[80px]"
+        className="flex w-max items-end pb-[clamp(12px,4vh,31px)] pt-[clamp(24px,8vh,80px)]"
         style={{
           marginLeft: LEFT_BLEED,
           paddingRight: "calc(50vw - min(188px, 41vw))",
@@ -274,7 +274,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
               }
               className="relative shrink-0 hover:z-30"
               style={{
-                width: `min(${CARD_W}px, 82vw)`,
+                width: `min(${CARD_W}px, 82vw, 42vh)`,
                 marginLeft: i === 0 ? 0 : -2 * OVERLAP,
                 zIndex: backFlip?.i === i ? 35 : undefined,
               }}
@@ -312,7 +312,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
               >
                 {/* Hover / focus reveal pill — Figma Component 1 (527:1953) */}
                 <span
-                  className={`pointer-events-none absolute left-1/2 top-[10%] z-10 flex h-10 -translate-x-1/2 items-center gap-6 rounded-full border border-white px-3 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.05)] transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 sm:h-[45px] sm:gap-[41px] sm:px-[15px] ${
+                  className={`pointer-events-none absolute left-1/2 top-[10%] z-10 flex h-10 w-max -translate-x-1/2 items-center gap-6 rounded-full border border-white px-3 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.05)] transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 sm:h-[45px] sm:gap-[41px] sm:px-[15px] ${
                     soleMatch ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
                   }`}
                   style={{ backgroundImage: "linear-gradient(180deg, #fafafa 0.27%, #bffffc 350%)" }}
@@ -324,6 +324,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
                         alt=""
                         width={20}
                         height={20}
+                        unoptimized
                         className="size-5"
                       />
                     </span>
@@ -336,6 +337,7 @@ export default function LandmarkStrip({ query }: { query: string }) {
                     alt=""
                     width={18}
                     height={18}
+                    unoptimized
                     className="size-[18px]"
                   />
                 </span>

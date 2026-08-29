@@ -20,7 +20,7 @@ export default function Navbar() {
         <div className="flex w-full items-center justify-between gap-2 rounded-full border border-white bg-white/40 px-2 py-2 pl-3 shadow-[0_0_20.9px_0_rgba(0,0,0,0.04)] backdrop-blur-md sm:gap-4 sm:px-3 sm:py-3 sm:pl-4">
           {/* Brand — left */}
           <a href="#" className="flex items-center gap-1.5">
-            <Image src="/icons/earth.svg" alt="" width={32} height={32} className="h-8 w-8" priority />
+            <Image src="/icons/earth.svg" alt="" width={32} height={32} className="h-8 w-8" priority unoptimized />
             <span className="whitespace-nowrap text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
               Dakar Travels
             </span>
