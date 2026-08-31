@@ -192,7 +192,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto -mt-10 flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-16 sm:-mt-16 sm:px-5">
+      <div className="relative z-10 mx-auto -mt-10 flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:-mt-16 sm:px-5">
         {/* Go Back chip */}
         <motion.div {...rise(0.15)}>
           <Link
