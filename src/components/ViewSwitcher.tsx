@@ -6,10 +6,14 @@
 
 /* eslint-disable @next/next/no-img-element */
 
+import { motion } from "framer-motion";
+
 export type CityView = "illustration" | "motion";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 const BUTTON =
-  "flex size-[25.78px] shrink-0 items-center justify-center rounded-[3.22px] transition-colors duration-200";
+  "relative flex size-[25.78px] shrink-0 items-center justify-center rounded-[3.22px]";
 
 export default function ViewSwitcher({
   value,
@@ -26,14 +30,20 @@ export default function ViewSwitcher({
       aria-label={label}
       aria-pressed={value === view}
       onClick={() => onChange(view)}
-      className={`${BUTTON} ${
-        value === view ? "bg-[#f6f6f6]" : "hover:bg-black/[0.03]"
-      }`}
+      className={`${BUTTON} ${value === view ? "" : "hover:bg-black/[0.03]"}`}
     >
+      {/* the selected pill slides between the two buttons */}
+      {value === view && (
+        <motion.span
+          layoutId="view-switcher-pill"
+          transition={{ duration: 0.42, ease: EASE }}
+          className="absolute inset-0 rounded-[3.22px] bg-[#f6f6f6]"
+        />
+      )}
       <img
         alt=""
         src={`/icons/detail/${icon}.svg`}
-        className="block size-[19.33px]"
+        className="relative block size-[19.33px]"
       />
     </button>
   );

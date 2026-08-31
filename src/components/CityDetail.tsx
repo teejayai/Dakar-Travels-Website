@@ -19,6 +19,10 @@ import {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/* one shared curve for the illustration ⇄ video swap, so the hero, the page
+   height and the content column all travel together */
+const SWAP = { duration: 0.55, ease: EASE } as const;
+
 const rise = (delay: number) => ({
   initial: { y: 24, opacity: 0 },
   animate: { y: 0, opacity: 1 },
@@ -127,37 +131,51 @@ export default function CityDetail({ city }: { city: CityInfo }) {
         </div>
       </div>
 
+      {/* Hero stack — the two views live in the same cell and cross-fade; the
+          wrapper animates its own height so everything below eases into place
+          instead of jumping between the 595px landmark and the 426px video. */}
+      <motion.div layout transition={SWAP} className="relative">
       {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
-      {view === "motion" && (
-        <div className="relative flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px]">
-          <motion.div
-            initial={{ y: 24, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, ease: EASE }}
-            className="w-full max-w-[1000px]"
-          >
-            <CityVideo
-              src={city.video}
-              label={`${city.name} in motion`}
-            />
-          </motion.div>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-[-200px] bottom-[-40px] h-[200px]"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
-              filter: "blur(50px)",
-            }}
-          />
+      <motion.div
+        animate={{
+          opacity: view === "motion" ? 1 : 0,
+          scale: view === "motion" ? 1 : 0.97,
+        }}
+        transition={SWAP}
+        inert={view !== "motion"}
+        className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
+          view === "motion"
+            ? "relative"
+            : "pointer-events-none absolute inset-x-0 top-0"
+        }`}
+      >
+        <div className="w-full max-w-[1000px]">
+          <CityVideo src={city.video} label={`${city.name} in motion`} />
         </div>
-      )}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-[-200px] bottom-[-40px] h-[200px]"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+            filter: "blur(50px)",
+          }}
+        />
+      </motion.div>
 
       {/* Hero landmark — large, centered, melting into the page via mask +
           the layer-blur haze (Figma rect 648:9831) */}
-      <div
-        className={`relative flex justify-center pt-[96px] sm:pt-[120px] ${
-          view === "motion" ? "hidden" : ""
+      <motion.div
+        animate={{
+          opacity: view === "illustration" ? 1 : 0,
+          scale: view === "illustration" ? 1 : 0.97,
+        }}
+        transition={SWAP}
+        inert={view !== "illustration"}
+        className={`flex justify-center pt-[96px] sm:pt-[120px] ${
+          view === "illustration"
+            ? "relative"
+            : "pointer-events-none absolute inset-x-0 top-0"
         }`}
       >
         {/* static box: measured for the FLIP, never transformed itself */}
@@ -206,10 +224,13 @@ export default function CityDetail({ city }: { city: CityInfo }) {
             filter: "blur(50px)",
           }}
         />
-      </div>
+      </motion.div>
+      </motion.div>
 
       {/* Content */}
-      <div
+      <motion.div
+        layout
+        transition={SWAP}
         className={`relative z-10 mx-auto flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:px-5 ${
           view === "motion"
             ? "mt-6 sm:mt-[39px]" /* video bottom 605 → content 644 */
@@ -373,7 +394,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
             </a>
           </div>
         </motion.section>
-      </div>
+      </motion.div>
 
       <Footer />
     </main>
