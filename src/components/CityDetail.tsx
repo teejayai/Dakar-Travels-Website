@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ViewSwitcher, { type CityView } from "@/components/ViewSwitcher";
+import CityVideo from "@/components/CityVideo";
 import type { CityInfo } from "@/components/cityData";
 import {
   MapIcon,
@@ -117,7 +118,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
       {/* View switcher — Figma puts it 104px in from the right edge of the
           1512 frame, 179px down (so 1304px of usable width between the rails) */}
       <div className="pointer-events-none absolute inset-x-0 top-[124px] z-30 sm:top-[179px]">
-        <div className="mx-auto flex w-full max-w-[1304px] justify-end px-4">
+        <div className="mx-auto flex w-full max-w-[1304px] justify-end px-6 sm:px-4">
           <ViewSwitcher
             value={view}
             onChange={setView}
@@ -126,9 +127,39 @@ export default function CityDetail({ city }: { city: CityInfo }) {
         </div>
       </div>
 
+      {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
+      {view === "motion" && (
+        <div className="relative flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px]">
+          <motion.div
+            initial={{ y: 24, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="w-full max-w-[1000px]"
+          >
+            <CityVideo
+              src={city.video}
+              label={`${city.name} in motion`}
+            />
+          </motion.div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-[-200px] bottom-[-40px] h-[200px]"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+              filter: "blur(50px)",
+            }}
+          />
+        </div>
+      )}
+
       {/* Hero landmark — large, centered, melting into the page via mask +
           the layer-blur haze (Figma rect 648:9831) */}
-      <div className="relative flex justify-center pt-[96px] sm:pt-[120px]">
+      <div
+        className={`relative flex justify-center pt-[96px] sm:pt-[120px] ${
+          view === "motion" ? "hidden" : ""
+        }`}
+      >
         {/* static box: measured for the FLIP, never transformed itself */}
         <div ref={heroBoxRef} className="pointer-events-none relative">
           <motion.div
@@ -154,29 +185,15 @@ export default function CityDetail({ city }: { city: CityInfo }) {
                 "linear-gradient(to bottom, #000 55%, transparent 96%)",
             }}
           >
-            {/* motion view: the landmark breathes in a slow loop */}
-            <motion.div
-              animate={
-                view === "motion"
-                  ? { y: [0, -14, 0], scale: [1, 1.025, 1] }
-                  : { y: 0, scale: 1 }
-              }
-              transition={
-                view === "motion"
-                  ? { duration: 6, ease: "easeInOut", repeat: Infinity }
-                  : { duration: 0.5, ease: EASE }
-              }
-            >
-              <Image
-                src={city.src}
-                alt={`${city.landmark} — ${city.name}`}
-                width={551}
-                height={595}
-                priority
-                unoptimized
-                className="h-auto w-[min(551px,70vw)]"
-              />
-            </motion.div>
+            <Image
+              src={city.src}
+              alt={`${city.landmark} — ${city.name}`}
+              width={551}
+              height={595}
+              priority
+              unoptimized
+              className="h-auto w-[min(551px,70vw)]"
+            />
           </motion.div>
         </div>
         {/* soft haze over the base */}
@@ -192,7 +209,13 @@ export default function CityDetail({ city }: { city: CityInfo }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto -mt-10 flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:-mt-16 sm:px-5">
+      <div
+        className={`relative z-10 mx-auto flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:px-5 ${
+          view === "motion"
+            ? "mt-6 sm:mt-[39px]" /* video bottom 605 → content 644 */
+            : "-mt-10 sm:-mt-16"
+        }`}
+      >
         {/* Go Back chip */}
         <motion.div {...rise(0.15)}>
           <Link
@@ -203,6 +226,8 @@ export default function CityDetail({ city }: { city: CityInfo }) {
               const box = heroBoxRef.current;
               if (!box) return;
               const r = box.getBoundingClientRect();
+              // motion view hides the landmark, so there is nothing to hand back
+              if (!r.width || !r.height) return;
               sessionStorage.setItem(
                 "landmark-zoom-back",
                 JSON.stringify({

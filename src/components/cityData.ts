@@ -9,6 +9,9 @@ export type CityInfo = {
   climate: string;
   description: string;
   landmark: string;
+  /* Motion view. Drop an mp4 in /public/videos and point here — until then the
+     hero falls back to the mock frame. */
+  video?: string;
 };
 
 // Facts verified online (metro population estimates, 2025).
