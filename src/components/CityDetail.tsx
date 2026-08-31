@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ViewSwitcher, { type CityView } from "@/components/ViewSwitcher";
 import type { CityInfo } from "@/components/cityData";
 import {
   MapIcon,
@@ -69,6 +71,7 @@ export default function CityDetail({ city }: { city: CityInfo }) {
      `undefined` = not measured yet, `null` = no handoff → default entrance. */
   const heroBoxRef = useRef<HTMLDivElement>(null);
   const [flip, setFlip] = useState<Flip | null | undefined>(undefined);
+  const [view, setView] = useState<CityView>("illustration");
   // effect runs twice in dev (StrictMode) but storage can only be read once —
   // cache the first read so the second pass doesn't wipe it out
   const consumed = useRef<Flip | null | undefined>(undefined);
@@ -111,6 +114,18 @@ export default function CityDetail({ city }: { city: CityInfo }) {
     <main className="relative min-h-screen w-full overflow-x-clip bg-background">
       <Navbar />
 
+      {/* View switcher — Figma puts it 104px in from the right edge of the
+          1512 frame, 179px down (so 1304px of usable width between the rails) */}
+      <div className="pointer-events-none absolute inset-x-0 top-[124px] z-30 sm:top-[179px]">
+        <div className="mx-auto flex w-full max-w-[1304px] justify-end px-4">
+          <ViewSwitcher
+            value={view}
+            onChange={setView}
+            className="pointer-events-auto"
+          />
+        </div>
+      </div>
+
       {/* Hero landmark — large, centered, melting into the page via mask +
           the layer-blur haze (Figma rect 648:9831) */}
       <div className="relative flex justify-center pt-[96px] sm:pt-[120px]">
@@ -139,15 +154,29 @@ export default function CityDetail({ city }: { city: CityInfo }) {
                 "linear-gradient(to bottom, #000 55%, transparent 96%)",
             }}
           >
-            <Image
-              src={city.src}
-              alt={`${city.landmark} — ${city.name}`}
-              width={551}
-              height={595}
-              priority
-              unoptimized
-              className="h-auto w-[min(551px,70vw)]"
-            />
+            {/* motion view: the landmark breathes in a slow loop */}
+            <motion.div
+              animate={
+                view === "motion"
+                  ? { y: [0, -14, 0], scale: [1, 1.025, 1] }
+                  : { y: 0, scale: 1 }
+              }
+              transition={
+                view === "motion"
+                  ? { duration: 6, ease: "easeInOut", repeat: Infinity }
+                  : { duration: 0.5, ease: EASE }
+              }
+            >
+              <Image
+                src={city.src}
+                alt={`${city.landmark} — ${city.name}`}
+                width={551}
+                height={595}
+                priority
+                unoptimized
+                className="h-auto w-[min(551px,70vw)]"
+              />
+            </motion.div>
           </motion.div>
         </div>
         {/* soft haze over the base */}
@@ -320,6 +349,8 @@ export default function CityDetail({ city }: { city: CityInfo }) {
           </div>
         </motion.section>
       </div>
+
+      <Footer />
     </main>
   );
 }
