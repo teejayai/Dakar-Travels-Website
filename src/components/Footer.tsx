@@ -20,7 +20,9 @@ export default function Footer() {
           className="footer-blob-b pointer-events-none absolute right-0 top-[-5.5%] -z-10 aspect-square w-[max(100px,11.5%)] rounded-full bg-[#8bf9b5] opacity-60 blur-[55px] sm:opacity-100 sm:blur-[93px]"
         />
 
-        <div className="w-full px-5 pb-[clamp(48px,7.4vw,112px)] pt-[clamp(44px,5.5vw,83px)] sm:px-[4.6%]">
+        {/* rails: logo + tagline sit 109px in, the copyright 102px from the
+            right edge of the 1424px band (Figma 36339:288844 / :288845) */}
+        <div className="w-full px-5 pb-[clamp(48px,7.4vw,112px)] pt-[clamp(44px,5.5vw,83px)] sm:pl-[7.65%] sm:pr-[7.16%]">
           <Image
             src="/icons/earth.svg"
             alt=""

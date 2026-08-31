@@ -36,45 +36,48 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Footer brand blobs — slow, opposing drifts so the colour keeps moving
-   around the wordmark without ever reading as a loop. */
-@keyframes footer-drift-a {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  33% {
-    transform: translate3d(70%, -45%, 0) scale(1.18);
-  }
-  66% {
-    transform: translate3d(160%, 10%, 0) scale(0.9);
-  }
+/* Footer brand blobs — the blue and green ellipses trade corners on a slow
+   arc (translations are % of each blob's own box, measured from the Figma
+   positions: blue bottom-left ⇄ green top-right). */
+@keyframes footer-swap-a {
+  0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(200%, -120%, 0) scale(1.1);
+  }
+  50% {
+    transform: translate3d(614%, -150%, 0) scale(1);
+  }
+  75% {
+    transform: translate3d(380%, 30%, 0) scale(1.1);
   }
 }
 
-@keyframes footer-drift-b {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  33% {
-    transform: translate3d(-120%, 55%, 0) scale(0.92);
-  }
-  66% {
-    transform: translate3d(-40%, 130%, 0) scale(1.2);
-  }
+@keyframes footer-swap-b {
+  0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-300%, 40%, 0) scale(0.94);
+  }
+  50% {
+    transform: translate3d(-809%, 197%, 0) scale(1);
+  }
+  75% {
+    transform: translate3d(-450%, 250%, 0) scale(0.94);
   }
 }
 
 .footer-blob-a {
-  animation: footer-drift-a 26s ease-in-out infinite;
+  animation: footer-swap-a 34s ease-in-out infinite;
   will-change: transform;
 }
 
 .footer-blob-b {
-  animation: footer-drift-b 21s ease-in-out infinite;
+  animation: footer-swap-b 34s ease-in-out infinite;
   will-change: transform;
 }
 
