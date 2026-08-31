@@ -9,8 +9,11 @@ export type CityInfo = {
   climate: string;
   description: string;
   landmark: string;
-  /* Motion view. Drop an mp4 in /public/videos and point here — until then the
-     hero falls back to the mock frame. */
+  /* Motion view — a Vercel Blob URL (store: dakar-videos). Upload with
+       vercel blob put <file> --pathname videos/<slug>.mp4 --access public \
+         --rw-token "$BLOB_READ_WRITE_TOKEN"
+     and paste the returned URL here. Cities without one fall back to the
+     mock frame. */
   video?: string;
 };
 
@@ -59,6 +62,7 @@ export const CITY_INFO: CityInfo[] = [
     slug: "mangalore",
     name: "Mangalore",
     src: "/landmarks/mangalore.svg",
+    video: "https://wtwgvnxh9686e7fz.public.blob.vercel-storage.com/videos/mangalore-BBsly8q1hezeJAB9AWOQlrEWbmDIT0.mp4",
     state: "Karnataka, India",
     population: "0.8 Million",
     nickname: "Gateway of Karnataka",
@@ -72,6 +76,7 @@ export const CITY_INFO: CityInfo[] = [
     slug: "chennai",
     name: "Chennai",
     src: "/landmarks/chennai.svg",
+    video: "https://wtwgvnxh9686e7fz.public.blob.vercel-storage.com/videos/chennai-UkxiBFG49AUOjkdsragQhBrrhxmD1F.mp4",
     state: "Tamil Nadu, India",
     population: "12.3 Million",
     nickname: "Detroit of India",

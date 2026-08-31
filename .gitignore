@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# city videos live in Vercel Blob, keep local copies out of git
+/public/videos
