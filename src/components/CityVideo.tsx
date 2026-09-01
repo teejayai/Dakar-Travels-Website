@@ -40,7 +40,7 @@ export default function CityVideo({
 
   return (
     <div
-      className="relative aspect-[1000/426] w-full overflow-hidden rounded-[11px] bg-black"
+      className="relative aspect-[1000/426] w-full overflow-hidden rounded-[11px]"
       style={{
         WebkitMaskImage: "linear-gradient(to bottom, #000 78%, transparent 100%)",
         maskImage: "linear-gradient(to bottom, #000 78%, transparent 100%)",

@@ -77,6 +77,9 @@ export default function CityDetail({ city }: { city: CityInfo }) {
   const heroBoxRef = useRef<HTMLDivElement>(null);
   const [flip, setFlip] = useState<Flip | null | undefined>(undefined);
   const [view, setView] = useState<CityView>("illustration");
+  /* Where this page was opened from, so Go Back returns to the actual source
+     rather than always the landing page. */
+  const [origin, setOrigin] = useState("/");
   // effect runs twice in dev (StrictMode) but storage can only be read once —
   // cache the first read so the second pass doesn't wipe it out
   const consumed = useRef<Flip | null | undefined>(undefined);
@@ -88,10 +91,23 @@ export default function CityDetail({ city }: { city: CityInfo }) {
     }
     let next: Flip | null = null;
     try {
+      /* The card/landmark that was clicked hands over its view choice and the
+         page it lives on. Read both before the first paint so the correct hero
+         is the one that appears — no swap animation on mount. */
+      const from = sessionStorage.getItem("city-origin");
+      sessionStorage.removeItem("city-origin");
+      if (from) setOrigin(from);
+
+      const storedView = sessionStorage.getItem("city-view");
+      sessionStorage.removeItem("city-view");
+      if (storedView === "motion" || storedView === "illustration") {
+        setView(storedView);
+      }
+
       const raw = sessionStorage.getItem("landmark-zoom");
       sessionStorage.removeItem("landmark-zoom");
       if (raw) {
-        const from = JSON.parse(raw) as {
+        const rect = JSON.parse(raw) as {
           slug: string;
           x: number;
           y: number;
@@ -99,12 +115,12 @@ export default function CityDetail({ city }: { city: CityInfo }) {
           h: number;
         };
         const box = heroBoxRef.current;
-        if (from.slug === city.slug && box) {
+        if (rect.slug === city.slug && box) {
           const to = box.getBoundingClientRect();
           next = {
-            s: from.w / to.width,
-            dx: from.x + from.w / 2 - (to.x + to.width / 2),
-            dy: from.y + from.h / 2 - (to.y + to.height / 2),
+            s: rect.w / to.width,
+            dx: rect.x + rect.w / 2 - (to.x + to.width / 2),
+            dy: rect.y + rect.h / 2 - (to.y + to.height / 2),
           };
         }
       }
@@ -114,6 +130,9 @@ export default function CityDetail({ city }: { city: CityInfo }) {
     consumed.current = next;
     setFlip(next);
   }, [city.slug]);
+
+  /* nothing in the hero may paint until the handoff has been read */
+  const ready = flip !== undefined;
 
   return (
     <main className="relative min-h-screen w-full overflow-x-clip bg-background">
@@ -126,109 +145,129 @@ export default function CityDetail({ city }: { city: CityInfo }) {
           <ViewSwitcher
             value={view}
             onChange={setView}
-            className="pointer-events-auto"
+            className="pointer-events-auto flex-col"
           />
         </div>
       </div>
 
       {/* Hero stack — the two views live in the same cell and cross-fade; the
           wrapper animates its own height so everything below eases into place
-          instead of jumping between the 595px landmark and the 426px video. */}
-      <motion.div layout transition={SWAP} className="relative">
-      {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
-      <motion.div
-        animate={{
-          opacity: view === "motion" ? 1 : 0,
-          scale: view === "motion" ? 1 : 0.97,
-        }}
-        transition={SWAP}
-        inert={view !== "motion"}
-        className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
-          view === "motion"
-            ? "relative"
-            : "pointer-events-none absolute inset-x-0 top-0"
-        }`}
-      >
-        <div className="w-full max-w-[1000px]">
-          <CityVideo
-            src={city.video}
-            label={`${city.name} in motion`}
-            active={view === "motion"}
-          />
-        </div>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-[-200px] bottom-[-40px] h-[200px]"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
-            filter: "blur(50px)",
-          }}
-        />
-      </motion.div>
+          instead of jumping between the 595px landmark and the 426px video.
 
-      {/* Hero landmark — large, centered, melting into the page via mask +
-          the layer-blur haze (Figma rect 648:9831) */}
-      <motion.div
-        animate={{
-          opacity: view === "illustration" ? 1 : 0,
-          scale: view === "illustration" ? 1 : 0.97,
-        }}
-        transition={SWAP}
-        inert={view !== "illustration"}
-        className={`flex justify-center pt-[96px] sm:pt-[120px] ${
-          view === "illustration"
-            ? "relative"
-            : "pointer-events-none absolute inset-x-0 top-0"
-        }`}
-      >
-        {/* static box: measured for the FLIP, never transformed itself */}
-        <div ref={heroBoxRef} className="pointer-events-none relative">
-          <motion.div
-            key={flip ? "zoom" : "plain"}
-            initial={
-              flip === undefined
-                ? false
-                : flip
-                  ? { x: flip.dx, y: flip.dy, scale: flip.s, opacity: 1 }
-                  : { y: 40, opacity: 0, scale: 0.96 }
-            }
-            animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-            transition={
-              flip
-                ? { duration: 0.85, ease: EASE }
-                : { duration: 0.9, ease: EASE }
-            }
-            style={{
-              opacity: flip === undefined ? 0 : undefined,
-              WebkitMaskImage:
-                "linear-gradient(to bottom, #000 55%, transparent 96%)",
-              maskImage:
-                "linear-gradient(to bottom, #000 55%, transparent 96%)",
-            }}
-          >
-            <Image
-              src={city.src}
-              alt={`${city.landmark} — ${city.name}`}
-              width={551}
-              height={595}
-              priority
-              unoptimized
-              className="h-auto w-[min(551px,70vw)]"
-            />
-          </motion.div>
-        </div>
-        {/* soft haze over the base */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-[-200px] bottom-[-40px] h-[260px]"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
-            filter: "blur(50px)",
+          `ready` gates BOTH heroes to opacity 0 until the layout effect has
+          read the handoff. Without it the inactive hero paints once at full
+          opacity before animating away — `animate` alone is not applied to the
+          pre-hydration style, so the video block's dark box flashed through
+          every zoom-in. `layout` also waits, or the first commit would animate
+          the wrapper's height from the illustration's to the video's. */}
+      <motion.div layout={ready} transition={SWAP} className="relative">
+        {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: ready && view === "motion" ? 1 : 0,
+            scale: view === "motion" ? 1 : 0.97,
           }}
-        />
-      </motion.div>
+          transition={SWAP}
+          inert={!ready || view !== "motion"}
+          className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
+            view === "motion"
+              ? "relative"
+              : "pointer-events-none absolute inset-x-0 top-0"
+          }`}
+        >
+          <div className="relative w-full max-w-[1000px]">
+            <CityVideo
+              src={city.video}
+              label={`${city.name} in motion`}
+              active={view === "motion"}
+            />
+            {/* Bottom-edge haze, sized as a share of the video box (200/426
+                tall, 40/426 of overhang, 200/1000 of side bleed) rather than
+                fixed px. At 1512 the block is 426px tall, but on a phone it is
+                ~150px, where a flat 200px haze covered the entire clip instead
+                of just its bottom edge. The blur tracks the width for the same
+                reason. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-[-20%] bottom-[-9.4%] h-[47%]"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+                filter: "blur(clamp(16px,3.3vw,50px))",
+              }}
+            />
+          </div>
+        </motion.div>
+
+        {/* Hero landmark — large, centered, melting into the page via mask +
+          the layer-blur haze (Figma rect 648:9831) */}
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: ready && view === "illustration" ? 1 : 0,
+            scale: view === "illustration" ? 1 : 0.97,
+          }}
+          transition={SWAP}
+          inert={!ready || view !== "illustration"}
+          className={`flex justify-center pt-[96px] sm:pt-[120px] ${
+            view === "illustration"
+              ? "relative"
+              : "pointer-events-none absolute inset-x-0 top-0"
+          }`}
+        >
+          {/* static box: measured for the FLIP, never transformed itself */}
+          <div ref={heroBoxRef} className="pointer-events-none relative">
+            <motion.div
+              key={flip ? "zoom" : "plain"}
+              initial={
+                flip === undefined
+                  ? false
+                  : flip
+                    ? { x: flip.dx, y: flip.dy, scale: flip.s, opacity: 1 }
+                    : { y: 40, opacity: 0, scale: 0.96 }
+              }
+              animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+              transition={
+                flip
+                  ? { duration: 0.85, ease: EASE }
+                  : { duration: 0.9, ease: EASE }
+              }
+              style={{
+                opacity: flip === undefined ? 0 : undefined,
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, #000 55%, transparent 96%)",
+                maskImage:
+                  "linear-gradient(to bottom, #000 55%, transparent 96%)",
+              }}
+            >
+              <Image
+                src={city.src}
+                alt={`${city.landmark} — ${city.name}`}
+                width={551}
+                height={595}
+                priority
+                unoptimized
+                className="h-auto w-[min(551px,70vw)]"
+              />
+            </motion.div>
+
+            {/* soft haze over the base — a share of the landmark box (260/595
+                tall, 40/595 of overhang, 200/551 of side bleed) rather than
+                fixed px, so it stays a bottom-edge fade at every width instead
+                of washing out the whole illustration on a phone. Absolutely
+                positioned, so it does not affect the box the FLIP measures. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-[-36%] bottom-[-6.7%] h-[44%]"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+                filter: "blur(clamp(16px,3.3vw,50px))",
+              }}
+            />
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Content */}
@@ -244,8 +283,23 @@ export default function CityDetail({ city }: { city: CityInfo }) {
         {/* Go Back chip */}
         <motion.div {...rise(0.15)}>
           <Link
-            href="/"
+            href={origin}
             onClick={() => {
+              /* Mark the return so the grid only restores its scroll for an
+                 actual Go Back — otherwise a stored offset from a card click
+                 would still be sitting there and would hijack the next plain
+                 visit to /cities. */
+              if (origin === "/cities") {
+                try {
+                  sessionStorage.setItem("cities-return", "1");
+                } catch {
+                  /* storage unavailable — the grid just opens at the top */
+                }
+              }
+              /* The reverse zoom is only wired up on the landing strip, and the
+                 payload is one-shot: writing it when we are NOT going there
+                 would leave it in storage to fire on some later visit. */
+              if (origin !== "/") return;
               // hand the hero's rect back so the landing page can glide the
               // landmark into its slot (reverse shared-element zoom)
               const box = heroBoxRef.current;
@@ -282,7 +336,10 @@ export default function CityDetail({ city }: { city: CityInfo }) {
         </motion.div>
 
         {/* Name + description */}
-        <motion.section {...rise(0.22)} className={`${CARD} flex flex-col gap-3 p-4`}>
+        <motion.section
+          {...rise(0.22)}
+          className={`${CARD} flex flex-col gap-3 p-4`}
+        >
           <div className="flex items-center justify-between">
             <h1 className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
               {city.name}

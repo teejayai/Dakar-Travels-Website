@@ -1,13 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  // the Cities link reads as current on /cities (but not on a city detail page)
+  const onCities = pathname === "/cities";
 
   return (
     <motion.nav
@@ -20,7 +25,15 @@ export default function Navbar() {
         <div className="flex w-full items-center justify-between gap-2 rounded-full border border-white bg-white/40 px-2 py-2 pl-3 shadow-[0_0_20.9px_0_rgba(0,0,0,0.04)] backdrop-blur-md sm:gap-4 sm:px-3 sm:py-3 sm:pl-4">
           {/* Brand — left */}
           <a href="#" className="flex items-center gap-1.5">
-            <Image src="/icons/earth.svg" alt="" width={32} height={32} className="h-8 w-8" priority unoptimized />
+            <Image
+              src="/icons/earth.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8"
+              priority
+              unoptimized
+            />
             <span className="whitespace-nowrap text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
               Dakar Travels
             </span>
@@ -29,12 +42,15 @@ export default function Navbar() {
           {/* Right side: links (desktop) + Contact + menu (mobile) */}
           <div className="flex items-center gap-2 sm:gap-6">
             <div className="hidden items-center gap-6 sm:flex">
-              <a
-                href="#"
-                className="text-[14px] font-light tracking-[-0.42px] text-muted transition-colors hover:text-[#2d2d2d]"
+              <Link
+                href="/cities"
+                aria-current={onCities ? "page" : undefined}
+                className={`text-[14px] font-light tracking-[-0.42px] transition-colors hover:text-[#2d2d2d] ${
+                  onCities ? "text-[#2d2d2d]" : "text-muted"
+                }`}
               >
                 Cities
-              </a>
+              </Link>
               <a
                 href="#"
                 className="text-[14px] font-light tracking-[-0.42px] text-muted transition-colors hover:text-[#2d2d2d]"
@@ -91,15 +107,18 @@ export default function Navbar() {
               transition={{ duration: 0.25, ease: EASE }}
               className="absolute inset-x-0 top-[calc(100%+8px)] flex flex-col overflow-hidden rounded-[22px] border border-white bg-white/70 p-2 shadow-[0_8px_30px_0_rgba(0,0,0,0.06)] backdrop-blur-md sm:hidden"
             >
-              {["Cities", "About us"].map((label) => (
-                <a
+              {[
+                { label: "Cities", href: "/cities" },
+                { label: "About us", href: "#" },
+              ].map(({ label, href }) => (
+                <Link
                   key={label}
-                  href="#"
+                  href={href}
                   onClick={() => setOpen(false)}
                   className="rounded-full px-4 py-3 text-[14px] font-light tracking-[-0.42px] text-[#2d2d2d] transition-colors active:bg-white"
                 >
                   {label}
-                </a>
+                </Link>
               ))}
             </motion.div>
           )}

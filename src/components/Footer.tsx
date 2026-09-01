@@ -12,12 +12,12 @@ export default function Footer() {
         {/* Ellipse 43 — #A4E9F9, 216px, bleeding off the bottom-left */}
         <div
           aria-hidden
-          className="footer-blob-a pointer-events-none absolute bottom-[-13%] left-[-6.5%] -z-10 aspect-square w-[max(120px,15.2%)] rounded-full bg-[#a4e9f9] opacity-60 blur-[55px] sm:opacity-100 sm:blur-[93px]"
+          className="footer-blob-a pointer-events-none absolute bottom-[-13%] left-[-6.5%] -z-10 aspect-square w-[15.2%] rounded-full bg-[#a4e9f9] blur-[min(93px,6.15vw)]"
         />
         {/* Ellipse 44 — #8BF9B5, 164px, top-right */}
         <div
           aria-hidden
-          className="footer-blob-b pointer-events-none absolute right-0 top-[-5.5%] -z-10 aspect-square w-[max(100px,11.5%)] rounded-full bg-[#8bf9b5] opacity-60 blur-[55px] sm:opacity-100 sm:blur-[93px]"
+          className="footer-blob-b pointer-events-none absolute right-0 top-[-5.5%] -z-10 aspect-square w-[11.5%] rounded-full bg-[#8bf9b5] blur-[min(93px,6.15vw)]"
         />
 
         {/* The wordmark sets the rails: the logo and tagline line up with the

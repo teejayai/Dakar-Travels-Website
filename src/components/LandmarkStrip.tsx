@@ -306,6 +306,9 @@ export default function LandmarkStrip({ query }: { query: string }) {
                     "strip-scroll",
                     String(scrollerRef.current?.scrollLeft ?? 0),
                   );
+                  // the detail page's Go Back returns here, not to a fixed route
+                  sessionStorage.setItem("city-origin", "/");
+                  sessionStorage.setItem("city-view", "illustration");
                   router.push(`/cities/${city.name.toLowerCase()}`);
                 }}
                 className="group block w-full cursor-pointer outline-none disabled:cursor-default"

@@ -13,16 +13,24 @@ export type CityView = "illustration" | "motion";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const BUTTON =
-  "relative flex size-[25.78px] shrink-0 items-center justify-center rounded-[3.22px]";
+  /* the ::after gives a ~44px touch target without disturbing the 25.78px box */
+  "relative flex size-[25.78px] shrink-0 items-center justify-center rounded-[3.22px] after:absolute after:left-1/2 after:top-1/2 after:size-[44px] after:-translate-x-1/2 after:-translate-y-1/2 after:content-[''] lg:after:hidden";
 
 export default function ViewSwitcher({
   value,
   onChange,
   className,
+  layoutId = "view-switcher-pill",
 }: {
   value: CityView;
   onChange: (next: CityView) => void;
+  /* Must set a flex direction — the base class deliberately does not, so the
+     same control can sit vertically in a rail or horizontally in a toolbar. */
   className?: string;
+  /* Distinct per mounted instance. The cities index renders one for the
+     toolbar and one for the rail (only ever one visible), and a shared
+     `layoutId` would make framer try to animate the pill between them. */
+  layoutId?: string;
 }) {
   const item = (view: CityView, icon: string, label: string) => (
     <button
@@ -35,7 +43,7 @@ export default function ViewSwitcher({
       {/* the selected pill slides between the two buttons */}
       {value === view && (
         <motion.span
-          layoutId="view-switcher-pill"
+          layoutId={layoutId}
           transition={{ duration: 0.42, ease: EASE }}
           className="absolute inset-0 rounded-[3.22px] bg-[#f6f6f6]"
         />
@@ -52,7 +60,7 @@ export default function ViewSwitcher({
     <div
       role="group"
       aria-label="City view"
-      className={`flex flex-col gap-1 rounded-[6px] border-[0.5px] border-white bg-white/56 p-1 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] backdrop-blur-[13.5px] ${className ?? ""}`}
+      className={`flex gap-1 rounded-[6px] border-[0.5px] border-white bg-white/56 p-1 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] backdrop-blur-[13.5px] ${className ?? ""}`}
     >
       {item("illustration", "brush", "Illustration view")}
       {item("motion", "video-01", "Motion view")}

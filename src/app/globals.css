@@ -38,7 +38,15 @@ body {
 
 /* Footer brand blobs — the blue and green ellipses trade corners on a slow
    arc (translations are % of each blob's own box, measured from the Figma
-   positions: blue bottom-left ⇄ green top-right). */
+   positions: blue bottom-left ⇄ green top-right).
+
+   Because the offsets are percentages of the BLOB, the blob has to keep
+   scaling with the footer or the arc stops fitting inside it: with a floor of
+   `max(120px, 15.2%)` the 614% step became 737px in a 358px-wide mobile
+   footer, and `overflow-hidden` swallowed both blobs for ~half the cycle.
+   Blob widths are therefore pure percentages (15.2% / 11.5%) and the blur
+   tracks the viewport, so the whole composition is the same drawing at
+   every width. */
 @keyframes footer-swap-a {
   0%,
   100% {
