@@ -118,6 +118,7 @@ export const CITY_INFO: CityInfo[] = [
     slug: "coimbatore",
     name: "Coimbatore",
     src: "/landmarks/coimbatore.svg",
+    video: "/videos/coimbatore.mp4",
     state: "Tamil Nadu, India",
     population: "1.6 Million",
     nickname: "Manchester of South India",
