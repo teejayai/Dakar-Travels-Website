@@ -150,7 +150,11 @@ export default function CityDetail({ city }: { city: CityInfo }) {
         }`}
       >
         <div className="w-full max-w-[1000px]">
-          <CityVideo src={city.video} label={`${city.name} in motion`} />
+          <CityVideo
+            src={city.video}
+            label={`${city.name} in motion`}
+            active={view === "motion"}
+          />
         </div>
         <div
           aria-hidden

@@ -3,18 +3,41 @@
 /* Motion hero — Figma 36350:289714: a 1000×426 block, 11px radius, clipped,
    sitting 179px down the page and melting into the background at its bottom
    edge (the same haze the illustration hero uses).
-   No city ships a video yet, so the block renders a mock frame until one is
-   added to CityInfo.video. */
+   Cities without a clip render a mock frame instead.
+
+   The block stays mounted so it can cross-fade with the landmark, so the
+   <video> itself is only created once the motion view is actually opened —
+   otherwise every visitor would stream the file while looking at the
+   illustration. */
+
+import { useEffect, useRef, useState } from "react";
 
 export default function CityVideo({
   src,
   poster,
   label,
+  active,
 }: {
   src?: string;
   poster?: string;
   label: string;
+  active: boolean;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  // once opened, keep the element around so switching back is instant
+  const [requested, setRequested] = useState(false);
+
+  useEffect(() => {
+    if (active) setRequested(true);
+  }, [active]);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    if (active) void el.play().catch(() => {});
+    else el.pause();
+  }, [active, requested]);
+
   return (
     <div
       className="relative aspect-[1000/426] w-full overflow-hidden rounded-[11px] bg-black"
@@ -24,17 +47,20 @@ export default function CityVideo({
       }}
     >
       {src ? (
-        <video
-          src={src}
-          poster={poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-label={label}
-          className="size-full object-cover"
-        />
+        requested && (
+          <video
+            ref={videoRef}
+            src={src}
+            poster={poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={label}
+            className="size-full object-cover"
+          />
+        )
       ) : (
         /* mock frame: a slow sheen so the placeholder reads as footage, not a
            failed asset */
