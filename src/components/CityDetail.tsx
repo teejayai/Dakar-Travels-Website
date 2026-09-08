@@ -138,19 +138,36 @@ export default function CityDetail({ city }: { city: CityInfo }) {
     <main className="relative min-h-screen w-full overflow-x-clip bg-background">
       <Navbar />
 
-      {/* View switcher — Figma puts it 104px in from the right edge of the
-          1512 frame, 179px down (so 1304px of usable width between the rails) */}
-      <div className="pointer-events-none absolute inset-x-0 top-[124px] z-30 sm:top-[179px]">
-        <div className="mx-auto flex w-full max-w-[1304px] justify-end px-6 sm:px-4">
-          <ViewSwitcher
-            value={view}
-            onChange={setView}
-            className="pointer-events-auto flex-col"
-          />
-        </div>
-      </div>
+      {/* Hero + content region. It exists so the view switcher's rail can span
+          exactly this much of the page — the switcher should ride along while
+          the hero and the cards are in view, then scroll away before the
+          footer rather than hovering over it. */}
+      <div className="relative">
+        {/* View switcher — Figma puts it 104px in from the right edge of the
+            1512 frame, 179px down (so 1304px of usable width between the
+            rails). That is its resting spot; from there it sticks just clear
+            of the navbar.
 
-      {/* Hero stack — the two views live in the same cell and cross-fade; the
+            From lg the rail spans this whole region, so it stays pinned all
+            the way down the page — there is gutter either side of the 1004px
+            content column for it to sit in. Below lg there is no gutter and a
+            page-long rail parks the control right on top of the description
+            text (measured: ~1750px² of overlap at 390), so that case is
+            handled by the hero-scoped rail further down instead. */}
+        <div className="pointer-events-none absolute inset-0 z-30 hidden lg:block">
+          <div className="mx-auto h-full w-full max-w-[1304px] px-4">
+            <div className="sticky top-[140px] mt-[179px] flex justify-end">
+              <ViewSwitcher
+                value={view}
+                onChange={setView}
+                className="pointer-events-auto flex-col"
+                layoutId="detail-view-rail"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Hero stack — the two views live in the same cell and cross-fade; the
           wrapper animates its own height so everything below eases into place
           instead of jumping between the 595px landmark and the 426px video.
 
@@ -160,302 +177,320 @@ export default function CityDetail({ city }: { city: CityInfo }) {
           pre-hydration style, so the video block's dark box flashed through
           every zoom-in. `layout` also waits, or the first commit would animate
           the wrapper's height from the illustration's to the video's. */}
-      <motion.div layout={ready} transition={SWAP} className="relative">
-        {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
-        <motion.div
-          initial={false}
-          animate={{
-            opacity: ready && view === "motion" ? 1 : 0,
-            scale: view === "motion" ? 1 : 0.97,
-          }}
-          transition={SWAP}
-          inert={!ready || view !== "motion"}
-          className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
-            view === "motion"
-              ? "relative"
-              : "pointer-events-none absolute inset-x-0 top-0"
-          }`}
-        >
-          <div className="relative w-full max-w-[1000px]">
-            <CityVideo
-              src={city.video}
-              label={`${city.name} in motion`}
-              active={view === "motion"}
-            />
-            {/* Bottom-edge haze, sized as a share of the video box (200/426
+        <motion.div layout={ready} transition={SWAP} className="relative">
+          {/* Below lg the rail is scoped to the hero: the switcher only ever
+              changes the hero, so it rides along while that is on screen and
+              scrolls away with it rather than following the reader down over
+              the body text. */}
+          <div className="pointer-events-none absolute inset-0 z-30 lg:hidden">
+            <div className="mx-auto h-full w-full max-w-[1304px] px-6">
+              <div className="sticky top-[100px] mt-[124px] flex justify-end">
+                <ViewSwitcher
+                  value={view}
+                  onChange={setView}
+                  className="pointer-events-auto flex-col"
+                  layoutId="detail-view-hero"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Motion hero — Figma 36350:289714: 1000×426 video block, 179px down */}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: ready && view === "motion" ? 1 : 0,
+              scale: view === "motion" ? 1 : 0.97,
+            }}
+            transition={SWAP}
+            inert={!ready || view !== "motion"}
+            className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
+              view === "motion"
+                ? "relative"
+                : "pointer-events-none absolute inset-x-0 top-0"
+            }`}
+          >
+            <div className="relative w-full max-w-[1000px]">
+              <CityVideo
+                src={city.video}
+                label={`${city.name} in motion`}
+                active={view === "motion"}
+              />
+              {/* Bottom-edge haze, sized as a share of the video box (200/426
                 tall, 40/426 of overhang, 200/1000 of side bleed) rather than
                 fixed px. At 1512 the block is 426px tall, but on a phone it is
                 ~150px, where a flat 200px haze covered the entire clip instead
                 of just its bottom edge. The blur tracks the width for the same
                 reason. */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-[-20%] bottom-[-9.4%] h-[47%]"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
-                filter: "blur(clamp(16px,3.3vw,50px))",
-              }}
-            />
-          </div>
-        </motion.div>
-
-        {/* Hero landmark — large, centered, melting into the page via mask +
-          the layer-blur haze (Figma rect 648:9831) */}
-        <motion.div
-          initial={false}
-          animate={{
-            opacity: ready && view === "illustration" ? 1 : 0,
-            scale: view === "illustration" ? 1 : 0.97,
-          }}
-          transition={SWAP}
-          inert={!ready || view !== "illustration"}
-          className={`flex justify-center pt-[96px] sm:pt-[120px] ${
-            view === "illustration"
-              ? "relative"
-              : "pointer-events-none absolute inset-x-0 top-0"
-          }`}
-        >
-          {/* static box: measured for the FLIP, never transformed itself */}
-          <div ref={heroBoxRef} className="pointer-events-none relative">
-            <motion.div
-              key={flip ? "zoom" : "plain"}
-              initial={
-                flip === undefined
-                  ? false
-                  : flip
-                    ? { x: flip.dx, y: flip.dy, scale: flip.s, opacity: 1 }
-                    : { y: 40, opacity: 0, scale: 0.96 }
-              }
-              animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-              transition={
-                flip
-                  ? { duration: 0.85, ease: EASE }
-                  : { duration: 0.9, ease: EASE }
-              }
-              style={{
-                opacity: flip === undefined ? 0 : undefined,
-                WebkitMaskImage:
-                  "linear-gradient(to bottom, #000 55%, transparent 96%)",
-                maskImage:
-                  "linear-gradient(to bottom, #000 55%, transparent 96%)",
-              }}
-            >
-              <Image
-                src={city.src}
-                alt={`${city.landmark} — ${city.name}`}
-                width={551}
-                height={595}
-                priority
-                unoptimized
-                className="h-auto w-[min(551px,70vw)]"
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-[-20%] bottom-[-9.4%] h-[47%]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+                  filter: "blur(clamp(16px,3.3vw,50px))",
+                }}
               />
-            </motion.div>
+            </div>
+          </motion.div>
 
-            {/* soft haze over the base — a share of the landmark box (260/595
+          {/* Hero landmark — large, centered, melting into the page via mask +
+          the layer-blur haze (Figma rect 648:9831) */}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: ready && view === "illustration" ? 1 : 0,
+              scale: view === "illustration" ? 1 : 0.97,
+            }}
+            transition={SWAP}
+            inert={!ready || view !== "illustration"}
+            className={`flex justify-center pt-[96px] sm:pt-[120px] ${
+              view === "illustration"
+                ? "relative"
+                : "pointer-events-none absolute inset-x-0 top-0"
+            }`}
+          >
+            {/* static box: measured for the FLIP, never transformed itself */}
+            <div ref={heroBoxRef} className="pointer-events-none relative">
+              <motion.div
+                key={flip ? "zoom" : "plain"}
+                initial={
+                  flip === undefined
+                    ? false
+                    : flip
+                      ? { x: flip.dx, y: flip.dy, scale: flip.s, opacity: 1 }
+                      : { y: 40, opacity: 0, scale: 0.96 }
+                }
+                animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                transition={
+                  flip
+                    ? { duration: 0.85, ease: EASE }
+                    : { duration: 0.9, ease: EASE }
+                }
+                style={{
+                  opacity: flip === undefined ? 0 : undefined,
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, #000 55%, transparent 96%)",
+                  maskImage:
+                    "linear-gradient(to bottom, #000 55%, transparent 96%)",
+                }}
+              >
+                <Image
+                  src={city.src}
+                  alt={`${city.landmark} — ${city.name}`}
+                  width={551}
+                  height={595}
+                  priority
+                  unoptimized
+                  className="h-auto w-[min(551px,70vw)]"
+                />
+              </motion.div>
+
+              {/* soft haze over the base — a share of the landmark box (260/595
                 tall, 40/595 of overhang, 200/551 of side bleed) rather than
                 fixed px, so it stays a bottom-edge fade at every width instead
                 of washing out the whole illustration on a phone. Absolutely
                 positioned, so it does not affect the box the FLIP measures. */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-[-36%] bottom-[-6.7%] h-[44%]"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
-                filter: "blur(clamp(16px,3.3vw,50px))",
-              }}
-            />
-          </div>
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-[-36%] bottom-[-6.7%] h-[44%]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(241,241,241,0) 0%, rgba(241,241,241,0.9) 45%, #f1f1f1 75%)",
+                  filter: "blur(clamp(16px,3.3vw,50px))",
+                }}
+              />
+            </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
 
-      {/* Content */}
-      <motion.div
-        layout
-        transition={SWAP}
-        className={`relative z-10 mx-auto flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:px-5 ${
-          view === "motion"
-            ? "mt-6 sm:mt-[39px]" /* video bottom 605 → content 644 */
-            : "-mt-10 sm:-mt-16"
-        }`}
-      >
-        {/* Go Back chip */}
-        <motion.div {...rise(0.15)}>
-          <Link
-            href={origin}
-            onClick={() => {
-              /* Mark the return so the grid only restores its scroll for an
+        {/* Content */}
+        <motion.div
+          layout
+          transition={SWAP}
+          className={`relative z-10 mx-auto flex w-full max-w-[1004px] flex-col gap-[14px] px-4 pb-[clamp(72px,10.6vw,160px)] sm:px-5 ${
+            view === "motion"
+              ? "mt-6 sm:mt-[39px]" /* video bottom 605 → content 644 */
+              : "-mt-10 sm:-mt-16"
+          }`}
+        >
+          {/* Go Back chip */}
+          <motion.div {...rise(0.15)}>
+            <Link
+              href={origin}
+              onClick={() => {
+                /* Mark the return so the grid only restores its scroll for an
                  actual Go Back — otherwise a stored offset from a card click
                  would still be sitting there and would hijack the next plain
                  visit to /cities. */
-              if (origin === "/cities") {
-                try {
-                  sessionStorage.setItem("cities-return", "1");
-                } catch {
-                  /* storage unavailable — the grid just opens at the top */
+                if (origin === "/cities") {
+                  try {
+                    sessionStorage.setItem("cities-return", "1");
+                  } catch {
+                    /* storage unavailable — the grid just opens at the top */
+                  }
                 }
-              }
-              /* The reverse zoom is only wired up on the landing strip, and the
+                /* The reverse zoom is only wired up on the landing strip, and the
                  payload is one-shot: writing it when we are NOT going there
                  would leave it in storage to fire on some later visit. */
-              if (origin !== "/") return;
-              // hand the hero's rect back so the landing page can glide the
-              // landmark into its slot (reverse shared-element zoom)
-              const box = heroBoxRef.current;
-              if (!box) return;
-              const r = box.getBoundingClientRect();
-              // motion view hides the landmark, so there is nothing to hand back
-              if (!r.width || !r.height) return;
-              sessionStorage.setItem(
-                "landmark-zoom-back",
-                JSON.stringify({
-                  slug: city.slug,
-                  x: r.x,
-                  y: r.y,
-                  w: r.width,
-                  h: r.height,
-                }),
-              );
-            }}
-            className="inline-flex items-center gap-1 rounded-[10px] border-[0.5px] border-white bg-white/56 py-1 pl-1.5 pr-2 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform hover:scale-[1.04] active:scale-95"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M14.5 6 9 12l5.5 6"
-                stroke="#2d2d2d"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-[12px] font-light tracking-[-0.36px] text-[#2d2d2d]">
-              Go Back
-            </span>
-          </Link>
-        </motion.div>
+                if (origin !== "/") return;
+                // hand the hero's rect back so the landing page can glide the
+                // landmark into its slot (reverse shared-element zoom)
+                const box = heroBoxRef.current;
+                if (!box) return;
+                const r = box.getBoundingClientRect();
+                // motion view hides the landmark, so there is nothing to hand back
+                if (!r.width || !r.height) return;
+                sessionStorage.setItem(
+                  "landmark-zoom-back",
+                  JSON.stringify({
+                    slug: city.slug,
+                    x: r.x,
+                    y: r.y,
+                    w: r.width,
+                    h: r.height,
+                  }),
+                );
+              }}
+              className="inline-flex items-center gap-1 rounded-[10px] border-[0.5px] border-white bg-white/56 py-1 pl-1.5 pr-2 shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform hover:scale-[1.04] active:scale-95"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M14.5 6 9 12l5.5 6"
+                  stroke="#2d2d2d"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-[12px] font-light tracking-[-0.36px] text-[#2d2d2d]">
+                Go Back
+              </span>
+            </Link>
+          </motion.div>
 
-        {/* Name + description */}
-        <motion.section
-          {...rise(0.22)}
-          className={`${CARD} flex flex-col gap-3 p-4`}
-        >
-          <div className="flex items-center justify-between">
-            <h1 className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
-              {city.name}
-            </h1>
-            <span className="flex size-5 items-center justify-center overflow-hidden rounded-full border border-white bg-white">
-              <Image
-                src="/icons/india-flag.svg"
-                alt="India"
-                width={20}
-                height={20}
-                unoptimized
-                className="size-5"
-              />
-            </span>
-          </div>
-          <p className="text-[14px] font-light leading-[21px] text-muted">
-            {city.description}
-          </p>
-        </motion.section>
-
-        {/* Location + stats */}
-        <div className="flex flex-col gap-[14px] lg:flex-row">
-          {/* Location card */}
+          {/* Name + description */}
           <motion.section
-            {...rise(0.3)}
-            className={`${CARD} flex w-full flex-col gap-3 p-4 lg:h-[266px] lg:w-[509px]`}
+            {...rise(0.22)}
+            className={`${CARD} flex flex-col gap-3 p-4`}
           >
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <p className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
-                Location
-              </p>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-[11px] transition-opacity hover:opacity-70"
-              >
+            <div className="flex items-center justify-between">
+              <h1 className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
+                {city.name}
+              </h1>
+              <span className="flex size-5 items-center justify-center overflow-hidden rounded-full border border-white bg-white">
                 <Image
-                  src="/icons/detail/route.svg"
-                  alt=""
+                  src="/icons/india-flag.svg"
+                  alt="India"
                   width={20}
                   height={20}
                   unoptimized
                   className="size-5"
                 />
-                <span className="whitespace-nowrap text-[16px] font-light leading-5 text-muted underline decoration-dotted">
-                  {city.state}
-                </span>
-              </a>
+              </span>
             </div>
-            <div className="relative h-[191px] w-full overflow-hidden rounded-[10px] bg-white">
-              {/* exact Figma map export (477×191 @2x) with marker baked in */}
-              <Image
-                src="/icons/detail/map-card.png"
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 477px, 100vw"
-                className="object-cover"
-              />
-            </div>
+            <p className="text-[14px] font-light leading-[21px] text-muted">
+              {city.description}
+            </p>
           </motion.section>
 
-          {/* 2×2 stat grid */}
-          <div className="grid flex-1 grid-cols-2 gap-[10px] sm:gap-[14px]">
-            <StatCard
-              title="Population"
-              icon={<MapIcon />}
-              value={city.population}
-              delay={0.36}
-            />
-            <StatCard
-              title="Nickname"
-              icon={<FlowersIcon />}
-              value={city.nickname}
-              delay={0.42}
-            />
-            <StatCard
-              title="Language"
-              icon={<EarthIcon />}
-              value={city.language}
-              delay={0.48}
-            />
-            <StatCard
-              title="Climate"
-              icon={<MoonIcon />}
-              value={city.climate}
-              delay={0.54}
-            />
-          </div>
-        </div>
-
-        {/* CTA bar */}
-        <motion.section
-          {...rise(0.6)}
-          className={`${CARD} flex flex-col gap-3 overflow-hidden p-4`}
-        >
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-            <div className="flex items-center gap-[9px]">
-              <LuggageIcon />
-              <p className="text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
-                Ready to Experience {city.name}?
-              </p>
-            </div>
-            <a
-              href="#"
-              className="flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-white px-[34px] text-[16px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:w-auto"
-              style={{
-                backgroundImage:
-                  "linear-gradient(180deg, #fafafa 0.27%, #7eff5f 62.5%)",
-              }}
+          {/* Location + stats */}
+          <div className="flex flex-col gap-[14px] lg:flex-row">
+            {/* Location card */}
+            <motion.section
+              {...rise(0.3)}
+              className={`${CARD} flex w-full flex-col gap-3 p-4 lg:h-[266px] lg:w-[509px]`}
             >
-              Explore in Person
-            </a>
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <p className="text-[16px] font-normal leading-5 text-[#2d2d2d]">
+                  Location
+                </p>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-[11px] transition-opacity hover:opacity-70"
+                >
+                  <Image
+                    src="/icons/detail/route.svg"
+                    alt=""
+                    width={20}
+                    height={20}
+                    unoptimized
+                    className="size-5"
+                  />
+                  <span className="whitespace-nowrap text-[16px] font-light leading-5 text-muted underline decoration-dotted">
+                    {city.state}
+                  </span>
+                </a>
+              </div>
+              <div className="relative h-[191px] w-full overflow-hidden rounded-[10px] bg-white">
+                {/* exact Figma map export (477×191 @2x) with marker baked in */}
+                <Image
+                  src="/icons/detail/map-card.png"
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 477px, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </motion.section>
+
+            {/* 2×2 stat grid */}
+            <div className="grid flex-1 grid-cols-2 gap-[10px] sm:gap-[14px]">
+              <StatCard
+                title="Population"
+                icon={<MapIcon />}
+                value={city.population}
+                delay={0.36}
+              />
+              <StatCard
+                title="Nickname"
+                icon={<FlowersIcon />}
+                value={city.nickname}
+                delay={0.42}
+              />
+              <StatCard
+                title="Language"
+                icon={<EarthIcon />}
+                value={city.language}
+                delay={0.48}
+              />
+              <StatCard
+                title="Climate"
+                icon={<MoonIcon />}
+                value={city.climate}
+                delay={0.54}
+              />
+            </div>
           </div>
-        </motion.section>
-      </motion.div>
+
+          {/* CTA bar */}
+          <motion.section
+            {...rise(0.6)}
+            className={`${CARD} flex flex-col gap-3 overflow-hidden p-4`}
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+              <div className="flex items-center gap-[9px]">
+                <LuggageIcon />
+                <p className="text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
+                  Ready to Experience {city.name}?
+                </p>
+              </div>
+              <a
+                href="#"
+                className="flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-white px-[34px] text-[16px] font-normal tracking-[-0.48px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:w-auto"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(180deg, #fafafa 0.27%, #7eff5f 62.5%)",
+                }}
+              >
+                Explore in Person
+              </a>
+            </div>
+          </motion.section>
+        </motion.div>
+      </div>
 
       <Footer />
     </main>

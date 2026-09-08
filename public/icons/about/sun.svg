@@ -1,0 +1,13 @@
+<svg overflow="visible" width="19.3333" height="19.3333" viewBox="0 0 19.3333 19.3333" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="sun" stroke="#303030" stroke-width="0.805556" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="9.6667" cy="9.6667" r="3.2222"/>
+<path d="M9.6667 1.6111V3.2222"/>
+<path d="M9.6667 16.1111V17.7222"/>
+<path d="M3.9707 3.9707L5.1063 5.1063"/>
+<path d="M14.2263 14.2263L15.3619 15.3619"/>
+<path d="M1.6111 9.6667H3.2222"/>
+<path d="M16.1111 9.6667H17.7222"/>
+<path d="M5.1063 14.2263L3.9707 15.3619"/>
+<path d="M15.3619 3.9707L14.2263 5.1063"/>
+</g>
+</svg>

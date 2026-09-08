@@ -285,7 +285,7 @@ export default function CityCard({
                 onClick={() =>
                   onViewChange(wantsMotion ? "motion" : "illustration")
                 }
-                className={`${SWITCH_BTN} ${selected ? "" : "hover:bg-black/[0.03]"} disabled:opacity-40`}
+                className={`${SWITCH_BTN} ${selected ? "cursor-default" : "cursor-pointer hover:bg-black/[0.03]"} disabled:cursor-not-allowed disabled:opacity-40`}
               >
                 {selected && (
                   <motion.span

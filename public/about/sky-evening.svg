@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1232 650" preserveAspectRatio="none">
+  <!-- Evening sky fill, Figma 36570:75703 (Component 17, Property 1=Frame 1991427725).
+       An ellipse gradient skewed by Figma's own gradientTransform, which CSS
+       radial-gradient() cannot express — so it stays an SVG, transcribed
+       verbatim from the node. -->
+  <defs>
+    <radialGradient id="evening" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10"
+      gradientTransform="matrix(93.108 -41.886 94.478 40.133 455.5 508.5)">
+      <stop offset="0" stop-color="#f9ded4"/>
+      <stop offset="0.24238" stop-color="#ebb5c0"/>
+      <stop offset="0.41241" stop-color="#bf95af"/>
+      <stop offset="0.58245" stop-color="#93749d"/>
+      <stop offset="0.79123" stop-color="#63557a"/>
+      <stop offset="0.89561" stop-color="#4b4668"/>
+      <stop offset="1" stop-color="#333656"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="100%" height="100%" fill="url(#evening)"/>
+</svg>

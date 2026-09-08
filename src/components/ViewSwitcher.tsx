@@ -38,7 +38,7 @@ export default function ViewSwitcher({
       aria-label={label}
       aria-pressed={value === view}
       onClick={() => onChange(view)}
-      className={`${BUTTON} ${value === view ? "" : "hover:bg-black/[0.03]"}`}
+      className={`${BUTTON} ${value === view ? "cursor-default" : "cursor-pointer hover:bg-black/[0.03]"}`}
     >
       {/* the selected pill slides between the two buttons */}
       {value === view && (

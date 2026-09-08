@@ -5,14 +5,17 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { useContact } from "@/components/ContactModal";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const contact = useContact();
   const pathname = usePathname();
   // the Cities link reads as current on /cities (but not on a city detail page)
   const onCities = pathname === "/cities";
+  const onAbout = pathname === "/about";
 
   return (
     <motion.nav
@@ -23,8 +26,12 @@ export default function Navbar() {
     >
       <div className="relative w-full max-w-[632px]">
         <div className="flex w-full items-center justify-between gap-2 rounded-full border border-white bg-white/40 px-2 py-2 pl-3 shadow-[0_0_20.9px_0_rgba(0,0,0,0.04)] backdrop-blur-md sm:gap-4 sm:px-3 sm:py-3 sm:pl-4">
-          {/* Brand — left */}
-          <a href="#" className="flex items-center gap-1.5">
+          {/* Brand — left; mark and wordmark both go home */}
+          <Link
+            href="/"
+            aria-label="Dakar Travels — home"
+            className="flex items-center gap-1.5 rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-green-500/60"
+          >
             <Image
               src="/icons/earth.svg"
               alt=""
@@ -37,7 +44,7 @@ export default function Navbar() {
             <span className="whitespace-nowrap text-[14px] font-normal tracking-[-0.42px] text-[#2d2d2d]">
               Dakar Travels
             </span>
-          </a>
+          </Link>
 
           {/* Right side: links (desktop) + Contact + menu (mobile) */}
           <div className="flex items-center gap-2 sm:gap-6">
@@ -51,23 +58,27 @@ export default function Navbar() {
               >
                 Cities
               </Link>
-              <a
-                href="#"
-                className="text-[14px] font-light tracking-[-0.42px] text-muted transition-colors hover:text-[#2d2d2d]"
+              <Link
+                href="/about"
+                aria-current={onAbout ? "page" : undefined}
+                className={`text-[14px] font-light tracking-[-0.42px] transition-colors hover:text-[#2d2d2d] ${
+                  onAbout ? "text-[#2d2d2d]" : "text-muted"
+                }`}
               >
                 About us
-              </a>
+              </Link>
             </div>
-            <a
-              href="#"
-              className="flex h-[38px] items-center rounded-full border border-white px-4 text-[13px] font-light tracking-[-0.42px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:h-[45px] sm:px-[34px] sm:text-[14px]"
+            <button
+              type="button"
+              onClick={contact.open}
+              className="flex h-[38px] cursor-pointer items-center rounded-full border border-white px-4 text-[13px] font-light tracking-[-0.42px] text-green-ink shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] outline-none transition-transform duration-300 hover:scale-[1.03] active:scale-95 focus-visible:ring-2 focus-visible:ring-green-500/60 sm:h-[45px] sm:px-[34px] sm:text-[14px]"
               style={{
                 backgroundImage:
                   "linear-gradient(180deg, #fafafa 0%, #d0ffbf 350%)",
               }}
             >
               Contact Us
-            </a>
+            </button>
             {/* Menu icon — mobile only */}
             <button
               type="button"
@@ -109,7 +120,7 @@ export default function Navbar() {
             >
               {[
                 { label: "Cities", href: "/cities" },
-                { label: "About us", href: "#" },
+                { label: "About us", href: "/about" },
               ].map(({ label, href }) => (
                 <Link
                   key={label}

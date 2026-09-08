@@ -59,7 +59,7 @@ const FILTERS: { label: string; moods: Mood[] | null }[] = [
 ];
 
 const CHIP =
-  "relative flex shrink-0 items-center whitespace-nowrap rounded-[123px] px-[15px] py-[12px] text-[14px] min-h-[44px] sm:px-[18px] lg:min-h-0 font-light tracking-[-0.42px] shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-green-500/60";
+  "relative flex shrink-0 items-center whitespace-nowrap cursor-pointer rounded-[123px] px-[15px] py-[12px] text-[14px] min-h-[44px] sm:px-[18px] lg:min-h-0 font-light tracking-[-0.42px] shadow-[0_2px_13.9px_0_rgba(0,0,0,0.02)] outline-none transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-500/60";
 
 export default function CitiesGrid() {
   const [active, setActive] = useState(0);
@@ -223,8 +223,8 @@ export default function CitiesGrid() {
                 onClick={() => selectFilter(i)}
                 className={`${CHIP} ${
                   on
-                    ? "border border-white bg-green-ink text-white"
-                    : "border-[0.5px] border-white bg-white/56 text-[#303030] hover:bg-white"
+                    ? "border border-white bg-green-ink text-white hover:bg-[#2a4520] hover:shadow-[0_2px_10px_0_rgba(26,51,15,0.18)]"
+                    : "border-[0.5px] border-white bg-white/56 text-[#303030] hover:border-hairline hover:bg-white hover:text-green-ink hover:shadow-[0_2px_10px_0_rgba(0,0,0,0.05)]"
                 }`}
               >
                 {f.label}
@@ -252,13 +252,19 @@ export default function CitiesGrid() {
             width where that gap still fits, it tucks in against the viewport
             edge; below xl it sits above the grid, right-aligned. One instance
             only: ViewSwitcher's `layoutId` pill can't be mounted twice. */}
-        <div className="hidden xl:absolute xl:left-full xl:top-[4px] xl:ml-[min(182.78px,calc((100vw-869px)/2-49.78px))] xl:block">
-          <ViewSwitcher
-            value={view}
-            onChange={setPageView}
-            className="flex-col"
-            layoutId="cities-view-rail"
-          />
+        {/* The rail is a full-height column beside the grid (inset-y-0) so the
+            switcher can `sticky` inside it: it starts at the Figma offset
+            (4px below the first card row), rides down with the cards, and
+            scrolls away only when the grid itself does. */}
+        <div className="pointer-events-none hidden xl:absolute xl:inset-y-0 xl:left-full xl:ml-[min(182.78px,calc((100vw-869px)/2-49.78px))] xl:block">
+          <div className="pointer-events-auto sticky top-[140px] mt-[4px]">
+            <ViewSwitcher
+              value={view}
+              onChange={setPageView}
+              className="flex-col"
+              layoutId="cities-view-rail"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 sm:gap-[22px] lg:grid-cols-3 lg:justify-items-start">
