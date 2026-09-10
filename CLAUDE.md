@@ -322,6 +322,13 @@ Two things that look incidental:
 
 ### City detail views
 
+**The video block shares the content column's rails.** Both are
+`max-w-[1004px]` with `px-4` / `sm:px-5` *inside* that width, so the clip's
+edges land on the cards' edges at every viewport (verified: identical left and
+right at 390, 768, 1512 and 1990). It was a 1000px box nested inside the
+padding, i.e. 36px wider than the 964px the content actually gets — don't put a
+max-width back on the inner box.
+
 `CityDetail` holds a `view` state of `"illustration" | "motion"`, driven by `ViewSwitcher`. Both heroes stay mounted in the same cell and cross-fade; the inactive one is absolutely positioned and `inert`. `SWAP` is the single curve shared by the cross-fade, the wrapper's `layout` height animation, and the content column shift — keep them on one transition or the page jumps.
 
 **Both hero hazes are sized as a share of their hero, not in fixed px.** They

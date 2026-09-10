@@ -204,13 +204,17 @@ export default function CityDetail({ city }: { city: CityInfo }) {
             }}
             transition={SWAP}
             inert={!ready || view !== "motion"}
-            className={`flex justify-center px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
+            /* Same rails as the content column below it — `max-w-[1004px]`
+               with the padding *inside* it — so the clip and the cards line up
+               at every width. It used to be a 1000px box inside the padding,
+               which is 36px wider than the 964px the content actually gets. */
+            className={`mx-auto w-full max-w-[1004px] px-4 pt-[112px] sm:px-5 sm:pt-[179px] ${
               view === "motion"
                 ? "relative"
                 : "pointer-events-none absolute inset-x-0 top-0"
             }`}
           >
-            <div className="relative w-full max-w-[1000px]">
+            <div className="relative w-full">
               <CityVideo
                 src={city.video}
                 label={`${city.name} in motion`}
