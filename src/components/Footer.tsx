@@ -49,20 +49,11 @@ export default function Footer() {
               />
             </Link>
 
-            {/* The <p> stays the layout element — the negative margins that
-                tuck the mark and the tagline against the glyphs are tuned to
-                it. The link goes *inside* as inline content: as a block it
-                would take the whole 1.255 line box, which overlaps both the
-                mark above and the tagline below and swallowed their clicks.
-                `text-transparent` is required or the UA link colour overrides
-                the gradient that the <p> clips to its text. */}
+            {/* Plain text, not a link: the gradient is painted here and
+                clipped to the text, so an inner link with its own hover
+                layer composites the wordmark away. */}
             <p className="mt-[-0.085em] whitespace-nowrap bg-gradient-to-r from-[rgba(147,147,147,0)] via-[#2d2d2d] to-[rgba(147,147,147,0)] bg-clip-text text-center text-[length:var(--wm)] font-normal leading-[1.255] tracking-[-0.03em] text-transparent">
-              <Link
-                href="/"
-                className="rounded-lg text-transparent outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-green-500/60"
-              >
-                Dakar Travels
-              </Link>
+              Dakar Travels
             </p>
 
             <div className="mt-[calc(var(--wm)*-0.17)] flex items-center justify-between gap-4 pl-[calc(var(--wm)*0.101)] pr-[calc(var(--wm)*0.013)] text-[12px] font-light leading-[18px] tracking-[-0.28px] text-[#919191] sm:text-[14px]">
